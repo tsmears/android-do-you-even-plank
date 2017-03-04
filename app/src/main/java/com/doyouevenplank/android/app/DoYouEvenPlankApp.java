@@ -9,6 +9,7 @@ public class DoYouEvenPlankApp extends Application {
 
     public static final boolean IS_PROD = !BuildConfig.DEBUG;
 
+    // credentials for the developer account are in the Airtable base linked to in the shared Drive folder
     public static final String YOUTUBE_API_KEY = "AIzaSyDjPkbaxgKE86qsTg-t7Z04ufIya7yAlRE";
 
     @Override
