@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Do You Even Plank</string>
+
+    <string name="error_youtube_player">YouTube player erro: %1$s</string>
 </resources>

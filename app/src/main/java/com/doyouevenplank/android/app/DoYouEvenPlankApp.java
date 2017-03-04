@@ -9,6 +9,8 @@ public class DoYouEvenPlankApp extends Application {
 
     public static final boolean IS_PROD = !BuildConfig.DEBUG;
 
+    public static final String YOUTUBE_API_KEY = "AIzaSyDjPkbaxgKE86qsTg-t7Z04ufIya7yAlRE";
+
     @Override
     public void onCreate() {
         super.onCreate();

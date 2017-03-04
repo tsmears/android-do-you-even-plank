@@ -1,6 +1,10 @@
 # emacs
 *~
 
+# 3rd party libs
+# download from https://developers.google.com/youtube/android/player/downloads/
+app/libs/YouTubeAndroidPlayerApi.jar
+
 # Built application files
 *.apk
 *.ap_
