@@ -19,6 +19,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     private static final String EXTRA_VIDEO_DURATION_SECONDS = "extra_video_duration_seconds";
 
     private YouTubePlayerFragment mYouTubePlayerFragment;
+    private YouTubePlayer mPlayer;
 
     private Handler mHandler;
     private Runnable mFinishPlankingRunnable;
@@ -56,14 +57,15 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     }
 
     @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer player, boolean wasRestored) {
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+        mPlayer = player;
         if (!wasRestored) {
             player.loadVideo(mVideoId, mVideoStartTimeSeconds * 1000);
 
             mFinishPlankingRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    player.pause();
+                    mPlayer.pause();
                     VideoActivity.this.finish();
                 }
             };
@@ -78,6 +80,10 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
 
         if (mFinishPlankingRunnable != null) {
             mHandler.removeCallbacks(mFinishPlankingRunnable);
+        }
+
+        if (mPlayer != null) {
+            mPlayer.release();
         }
     }
 

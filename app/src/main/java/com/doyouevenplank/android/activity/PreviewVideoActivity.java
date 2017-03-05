@@ -8,8 +8,12 @@ import android.widget.TextView;
 
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
+import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.app.SessionManager;
 import com.doyouevenplank.android.model.Video;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import java.util.List;
 import java.util.Random;
@@ -21,11 +25,17 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
 
     private static final String EXTRA_DURATION = "extra_duration";
 
-    @BindView(R.id.video_title_textview) TextView mVideoTitleTextView;
-    @BindView(R.id.action_plank_textview) TextView mActionPlankTextView;
-    @BindView(R.id.action_skip_textview) TextView mActionSkipTextView;
+    @BindView(R.id.video_thumbnail_view)
+    YouTubeThumbnailView mVideoThumbnailView;
+    @BindView(R.id.video_title_textview)
+    TextView mVideoTitleTextView;
+    @BindView(R.id.action_plank_textview)
+    TextView mActionPlankTextView;
+    @BindView(R.id.action_skip_textview)
+    TextView mActionSkipTextView;
 
     private Random mRandom;
+    private ThumbnailListener mThumbnailListener;
     private Video mCurrentVideo;
 
     public static void start(Context caller, int duration) {
@@ -52,7 +62,11 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
         final List<Video> videos = SessionManager.getInstance().getVideosForDuration(duration);
         int randomIndex = mRandom.nextInt(videos.size());
         mCurrentVideo = videos.get(randomIndex);
-        this.fetchAndSetVideoTitle();
+
+        mThumbnailListener = new ThumbnailListener();
+        mVideoThumbnailView.setTag(mCurrentVideo.videoId);
+        mVideoThumbnailView.initialize(Config.YOUTUBE_API_KEY, mThumbnailListener);
+        this.fetchAndSetVideoMetadata();
 
         mActionPlankTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,13 +81,61 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
             public void onClick(View view) {
                 int newRandomIndex = mRandom.nextInt(videos.size());
                 mCurrentVideo = videos.get(newRandomIndex);
-                fetchAndSetVideoTitle();
+                fetchAndSetVideoMetadata();
             }
         });
     }
 
-    private void fetchAndSetVideoTitle() {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mThumbnailListener.releaseLoader();
+    }
+
+    private void fetchAndSetVideoMetadata() {
         mVideoTitleTextView.setText(mCurrentVideo.videoId);
+        mThumbnailListener.loadNewThumbnail(mCurrentVideo.videoId);
+    }
+
+    private final class ThumbnailListener implements YouTubeThumbnailView.OnInitializedListener, YouTubeThumbnailLoader.OnThumbnailLoadedListener {
+
+        private YouTubeThumbnailLoader mLoader;
+
+        public void releaseLoader() {
+            if (mLoader != null) {
+                mLoader.release();
+            }
+        }
+
+        public void loadNewThumbnail(String videoId) {
+            if (mLoader != null) {
+                mLoader.setVideo(videoId);
+            }
+        }
+
+        @Override
+        public void onInitializationSuccess(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {
+            loader.setOnThumbnailLoadedListener(this);
+            mLoader = loader;
+            // view.setImageResource(R.drawable.loading_thumbnail);
+            String videoId = (String) view.getTag();
+            mLoader.setVideo(videoId);
+        }
+
+        @Override
+        public void onInitializationFailure(YouTubeThumbnailView view, YouTubeInitializationResult loader) {
+            // view.setImageResource(R.drawable.no_thumbnail);
+        }
+
+        @Override
+        public void onThumbnailLoaded(YouTubeThumbnailView view, String videoId) {
+        }
+
+        @Override
+        public void onThumbnailError(YouTubeThumbnailView view, YouTubeThumbnailLoader.ErrorReason errorReason) {
+            // view.setImageResource(R.drawable.no_thumbnail);
+        }
     }
 
 }
