@@ -20,7 +20,13 @@ public class GoogleSheetsVideoMetadataPayload {
         public WrappedString gsx$endtime;
 
         public static class WrappedString {
-            public String $t;
+
+            private String $t;
+
+            public String getString() {
+                return $t;
+            }
+
         }
 
     }

@@ -1,8 +1,11 @@
 package com.doyouevenplank.android.app;
 
+import android.util.Log;
+
 import com.doyouevenplank.android.model.Session;
 import com.doyouevenplank.android.network.GoogleSheetsApi;
 import com.doyouevenplank.android.network.GoogleSheetsVideoMetadataPayload;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,6 +31,7 @@ public class SessionManager {
         request.enqueue(new Callback<GoogleSheetsVideoMetadataPayload>() {
             @Override
             public void onResponse(Call<GoogleSheetsVideoMetadataPayload> call, Response<GoogleSheetsVideoMetadataPayload> response) {
+                Log.d("patricia", new Gson().toJson(response.body()));
                 mSession = new Session(response.body());
             }
 
