@@ -1,9 +1,9 @@
 package com.doyouevenplank.android.util;
 
+import android.net.UrlQuerySanitizer;
 import android.text.TextUtils;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.doyouevenplank.android.app.Config;
 
 public class StringUtils {
 
@@ -29,19 +29,35 @@ public class StringUtils {
         }
     }
 
+    /**
+     * we only handle links of the form youtu.be, and otherwise look at the query param v.
+     * we assume that videoIds are always 11 characters long. this will break if that ever changes.
+     */
     public static String getVideoIdFromGsxLink(String gsxLink) throws Exception {
         if (TextUtils.isEmpty(gsxLink)) {
             throw new Exception("empty or missing gsxLink from server");
         }
 
-        // http://markmail.org/message/jb6nsveqs7hya5la
-        Pattern pattern = Pattern.compile("^https://www.youtube.com/watch?v\\u003d([a-zA-Z0-9_-]{11,})[$|\\]]");
-        Matcher matcher = pattern.matcher(gsxLink);
-        if (matcher.find()) {
-            return matcher.group();
-        } else {
-            throw new Exception("gsxLink did not match pattern; " + gsxLink);
+        // special case youtu.be shortened links
+        String shortenedYoutubePrefix = "https://youtu.be/";
+        if (gsxLink.startsWith(shortenedYoutubePrefix)) {
+            String videoId = gsxLink.replace(shortenedYoutubePrefix, "");
+            if (videoId.length() != Config.YOUTUBE_VIDEO_ID_LENGTH) {
+                throw new Exception("did not recognize shortened youtube link " + gsxLink);
+            }
+            return videoId;
         }
+
+        // otherwise, just look at the v= param
+        UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(gsxLink);
+        String videoId = sanitizer.getValue("v");
+        if (TextUtils.isEmpty(videoId)) {
+            throw new Exception("could not find query param v in " + gsxLink);
+        }
+        if (videoId.length() != Config.YOUTUBE_VIDEO_ID_LENGTH) {
+            throw new Exception("query param v was malformed in " + gsxLink);
+        }
+        return videoId;
     }
 
 }

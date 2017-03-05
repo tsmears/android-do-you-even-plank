@@ -8,13 +8,17 @@ import java.util.List;
  */
 public class GoogleSheetsVideoMetadataPayload {
 
-    public List<Entry> entry;
+    public Feed feed;
+
+    public static class Feed {
+        public List<Entry> entry;
+    }
 
     public static class Entry {
 
         public WrappedString id;
-        public WrappedString gsx$link; // NOTE: this shit is escaped
-        public WrappedString gsx$time; // NOTE: this is for some reason a string
+        public WrappedString gsx$link;
+        public WrappedString gsx$time;
         public WrappedString gsx$genre;
         public WrappedString gsx$starttime;
         public WrappedString gsx$endtime;
