@@ -1,5 +1,7 @@
 package com.doyouevenplank.android.app;
 
+import android.util.Log;
+
 import com.doyouevenplank.android.model.Session;
 import com.doyouevenplank.android.model.Video;
 import com.doyouevenplank.android.network.GoogleSheetsApi;
@@ -36,7 +38,7 @@ public class SessionManager {
 
             @Override
             public void onFailure(Call<GoogleSheetsVideoMetadataPayload> call, Throwable t) {
-                // TODO handle failure
+                Log.e(Config.LOG_WARNING_TAG, "error fetching video metadata");
             }
         });
     }
@@ -46,6 +48,10 @@ public class SessionManager {
             sInstance = new SessionManager();
         }
         return sInstance;
+    }
+
+    public boolean isReady() {
+        return mSession != null;
     }
 
     public List<Video> getVideosForDuration(int durationSeconds) {

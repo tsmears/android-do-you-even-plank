@@ -3,8 +3,6 @@ package com.doyouevenplank.android.activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
 
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
@@ -33,7 +31,7 @@ public class PickDurationActivity extends DoYouEvenPlankActivity {
         mPickDurationRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mPickDurationRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PickDurationAdapter();
+        mAdapter = new PickDurationAdapter(this);
         mPickDurationRecyclerView.setAdapter(mAdapter);
     }
 

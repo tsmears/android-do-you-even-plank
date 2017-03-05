@@ -2,16 +2,17 @@ package com.doyouevenplank.android.component;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doyouevenplank.android.R;
+import com.doyouevenplank.android.activity.PickDurationActivity;
 import com.doyouevenplank.android.activity.PreviewVideoActivity;
-import com.doyouevenplank.android.activity.VideoActivity;
 import com.doyouevenplank.android.app.Config;
+import com.doyouevenplank.android.app.SessionManager;
 import com.doyouevenplank.android.util.StringUtils;
 
 public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapter.TextViewItemViewHolder> {
@@ -19,8 +20,10 @@ public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapte
     private static int TYPE_HEADER_ITEM = 0;
     private static int TYPE_DURATION_ITEM = 1;
 
-    public PickDurationAdapter() {
+    private PickDurationActivity mActivity;
 
+    public PickDurationAdapter(PickDurationActivity activity) {
+        mActivity = activity;
     }
 
     @Override
@@ -56,7 +59,11 @@ public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapte
             holder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PreviewVideoActivity.start(context, duration);
+                    if (SessionManager.getInstance().isReady()) {
+                        PreviewVideoActivity.start(context, duration);
+                    } else {
+                        Toast.makeText(mActivity, R.string.error_fetching_video_metadata, Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }

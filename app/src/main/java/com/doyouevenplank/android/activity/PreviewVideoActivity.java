@@ -58,6 +58,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
             @Override
             public void onClick(View view) {
                 VideoActivity.start(PreviewVideoActivity.this, mCurrentVideo);
+                finish();
             }
         });
 
