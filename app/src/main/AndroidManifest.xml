@@ -21,9 +21,15 @@
         </activity>
 
         <activity
-            android:name=".activity.VideoActivity"
+            android:name=".activity.PreviewVideoActivity"
             android:screenOrientation="landscape"
             android:parentActivityName=".activity.PickDurationActivity">
+        </activity>
+
+        <activity
+            android:name=".activity.VideoActivity"
+            android:screenOrientation="landscape"
+            android:parentActivityName=".activity.PreviewVideoActivity">
         </activity>
 
     </application>

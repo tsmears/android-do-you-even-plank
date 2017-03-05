@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.doyouevenplank.android.R;
+import com.doyouevenplank.android.activity.PreviewVideoActivity;
 import com.doyouevenplank.android.activity.VideoActivity;
 import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.util.StringUtils;
@@ -50,12 +51,12 @@ public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapte
         if (viewType == TYPE_HEADER_ITEM) {
             // do nothing; the header is static
         } else { // assume viewType == TYPE_DURATION_ITEM) {
-            int duration = Config.PLANK_CHOICE_DURATIONS[position - 1];
+            final int duration = Config.PLANK_CHOICE_DURATIONS[position - 1];
             holder.textView.setText(StringUtils.getTimeStringFromIntDuration(duration));
             holder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    VideoActivity.start(context);
+                    PreviewVideoActivity.start(context, duration);
                 }
             });
         }

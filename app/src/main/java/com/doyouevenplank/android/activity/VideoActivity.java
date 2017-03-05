@@ -7,15 +7,27 @@ import android.os.Bundle;
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.YouTubeFailureRecoveryActivity;
 import com.doyouevenplank.android.app.Config;
+import com.doyouevenplank.android.model.Video;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 
 public class VideoActivity extends YouTubeFailureRecoveryActivity {
 
+    private static final String EXTRA_VIDEO_ID = "extra_video_json";
+    private static final String EXTRA_VIDEO_START_TIME = "extra_video_start_time";
+    private static final String EXTRA_VIDEO_END_TIME = "extra_video_end_time";
+
     private YouTubePlayerFragment mYouTubePlayerFragment;
 
-    public static void start(Context caller) {
+    private String mVideoId;
+    private int mVideoStartTime;
+    private int mVideoEndTime;
+
+    public static void start(Context caller, Video video) {
         Intent intent = new Intent(caller, VideoActivity.class);
+        intent.putExtra(EXTRA_VIDEO_ID, video.videoId);
+        intent.putExtra(EXTRA_VIDEO_START_TIME, video.startTimeSeconds);
+        intent.putExtra(EXTRA_VIDEO_END_TIME, video.endTimeSeconds);
         caller.startActivity(intent);
     }
 
@@ -24,6 +36,15 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
+        mVideoId = getIntent().getStringExtra(EXTRA_VIDEO_ID);
+        mVideoStartTime = getIntent().getIntExtra(EXTRA_VIDEO_START_TIME, -1);
+        mVideoEndTime = getIntent().getIntExtra(EXTRA_VIDEO_END_TIME, -1);
+
+        if (mVideoStartTime == -1 || mVideoEndTime == -1) {
+            finish();
+            return;
+        }
+
         mYouTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
         mYouTubePlayerFragment.initialize(Config.YOUTUBE_API_KEY, this);
     }
@@ -31,7 +52,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
         if (!wasRestored) {
-            player.loadVideo("nCgQDjiotG0");
+            player.loadVideo(mVideoId);
         }
     }
 

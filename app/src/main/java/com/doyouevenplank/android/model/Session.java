@@ -7,16 +7,16 @@ import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.network.GoogleSheetsVideoMetadataPayload;
 import com.doyouevenplank.android.util.StringUtils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Session {
 
     // use SparseArray to avoid autoboxing
-    private SparseArray<Set<Video>> mVideosByDuration;
+    private SparseArray<List<Video>> mVideosByDuration;
 
     public Session(GoogleSheetsVideoMetadataPayload payload) {
-        mVideosByDuration = new SparseArray<Set<Video>>();
+        mVideosByDuration = new SparseArray<List<Video>>();
 
         for (GoogleSheetsVideoMetadataPayload.Entry entry : payload.feed.entry) {
             try {
@@ -32,14 +32,14 @@ public class Session {
         }
     }
 
-    public Set<Video> getVideosForDuration(int durationSeconds) {
+    public List<Video> getVideosForDuration(int durationSeconds) {
         return mVideosByDuration.get(durationSeconds);
     }
 
     private void safeInsertIntoMap(Video video) {
-        Set<Video> durationSubset = mVideosByDuration.get(video.durationSeconds);
+        List<Video> durationSubset = mVideosByDuration.get(video.durationSeconds);
         if (durationSubset == null) {
-            durationSubset = new HashSet<Video>();
+            durationSubset = new ArrayList<Video>();
             mVideosByDuration.put(video.durationSeconds, durationSubset);
         }
         durationSubset.add(video);

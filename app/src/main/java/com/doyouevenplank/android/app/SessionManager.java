@@ -5,7 +5,7 @@ import com.doyouevenplank.android.model.Video;
 import com.doyouevenplank.android.network.GoogleSheetsApi;
 import com.doyouevenplank.android.network.GoogleSheetsVideoMetadataPayload;
 
-import java.util.Set;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,7 +48,7 @@ public class SessionManager {
         return sInstance;
     }
 
-    public Set<Video> getVideosForDuration(int durationSeconds) {
+    public List<Video> getVideosForDuration(int durationSeconds) {
         return mSession.getVideosForDuration(durationSeconds);
     }
 
