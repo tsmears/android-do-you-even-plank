@@ -14,20 +14,20 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 public class VideoActivity extends YouTubeFailureRecoveryActivity {
 
     private static final String EXTRA_VIDEO_ID = "extra_video_json";
-    private static final String EXTRA_VIDEO_START_TIME = "extra_video_start_time";
-    private static final String EXTRA_VIDEO_END_TIME = "extra_video_end_time";
+    private static final String EXTRA_VIDEO_START_TIME_SECONDS = "extra_video_start_time";
+    private static final String EXTRA_VIDEO_END_TIME_SECONDS = "extra_video_end_time";
 
     private YouTubePlayerFragment mYouTubePlayerFragment;
 
     private String mVideoId;
-    private int mVideoStartTime;
-    private int mVideoEndTime;
+    private int mVideoStartTimeSeconds;
+    private int mVideoEndTimeSeconds;
 
     public static void start(Context caller, Video video) {
         Intent intent = new Intent(caller, VideoActivity.class);
         intent.putExtra(EXTRA_VIDEO_ID, video.videoId);
-        intent.putExtra(EXTRA_VIDEO_START_TIME, video.startTimeSeconds);
-        intent.putExtra(EXTRA_VIDEO_END_TIME, video.endTimeSeconds);
+        intent.putExtra(EXTRA_VIDEO_START_TIME_SECONDS, video.startTimeSeconds);
+        intent.putExtra(EXTRA_VIDEO_END_TIME_SECONDS, video.endTimeSeconds);
         caller.startActivity(intent);
     }
 
@@ -37,10 +37,10 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
         setContentView(R.layout.activity_video);
 
         mVideoId = getIntent().getStringExtra(EXTRA_VIDEO_ID);
-        mVideoStartTime = getIntent().getIntExtra(EXTRA_VIDEO_START_TIME, -1);
-        mVideoEndTime = getIntent().getIntExtra(EXTRA_VIDEO_END_TIME, -1);
+        mVideoStartTimeSeconds = getIntent().getIntExtra(EXTRA_VIDEO_START_TIME_SECONDS, -1);
+        mVideoEndTimeSeconds = getIntent().getIntExtra(EXTRA_VIDEO_END_TIME_SECONDS, -1);
 
-        if (mVideoStartTime == -1 || mVideoEndTime == -1) {
+        if (mVideoStartTimeSeconds == -1 || mVideoEndTimeSeconds == -1) {
             finish();
             return;
         }
@@ -52,7 +52,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
         if (!wasRestored) {
-            player.loadVideo(mVideoId);
+            player.loadVideo(mVideoId, mVideoStartTimeSeconds * 1000);
         }
     }
 
