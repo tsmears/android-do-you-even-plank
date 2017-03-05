@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
+import com.doyouevenplank.android.app.SessionManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +27,9 @@ public class PickDurationActivity extends DoYouEvenPlankActivity {
                 VideoActivity.start(PickDurationActivity.this);
             }
         });
+
+        // request an instance of SessionManager, just to kick off the network request
+        SessionManager.getInstance();
     }
 
 }
