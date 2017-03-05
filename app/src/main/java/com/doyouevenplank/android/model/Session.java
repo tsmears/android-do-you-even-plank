@@ -32,6 +32,10 @@ public class Session {
         }
     }
 
+    public Set<Video> getVideosForDuration(int durationSeconds) {
+        return mVideosByDuration.get(durationSeconds);
+    }
+
     private void safeInsertIntoMap(Video video) {
         Set<Video> durationSubset = mVideosByDuration.get(video.durationSeconds);
         if (durationSubset == null) {

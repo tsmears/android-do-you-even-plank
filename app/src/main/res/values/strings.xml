@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Do You Even Plank</string>
 
-    <string name="error_youtube_player">YouTube player erro: %1$s</string>
+    <string name="error_youtube_player">YouTube player error: %1$s</string>
+
+    <string name="pick_duration_header_message">How long can you plank?</string>
 </resources>

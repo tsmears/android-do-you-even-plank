@@ -1,8 +1,11 @@
 package com.doyouevenplank.android.app;
 
 import com.doyouevenplank.android.model.Session;
+import com.doyouevenplank.android.model.Video;
 import com.doyouevenplank.android.network.GoogleSheetsApi;
 import com.doyouevenplank.android.network.GoogleSheetsVideoMetadataPayload;
+
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +46,10 @@ public class SessionManager {
             sInstance = new SessionManager();
         }
         return sInstance;
+    }
+
+    public Set<Video> getVideosForDuration(int durationSeconds) {
+        return mSession.getVideosForDuration(durationSeconds);
     }
 
 }

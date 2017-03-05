@@ -7,6 +7,16 @@ import com.doyouevenplank.android.app.Config;
 
 public class StringUtils {
 
+    public static String getTimeStringFromIntDuration(int durationSeconds) {
+        int minutes = durationSeconds / 60;
+        int seconds = durationSeconds % 60;
+        if (seconds != 0) {
+            return minutes + ":" + seconds;
+        } else {
+            return minutes + ":00";
+        }
+    }
+
     /**
      * we'll only handle the following formats:
      *  - :xy
