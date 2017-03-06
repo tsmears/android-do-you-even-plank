@@ -117,6 +117,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
     }
 
     private void fetchAndSetVideoMetadata() {
+        mVideoThumbnailView.setImageResource(R.drawable.loading_placeholder);
         mVideoTitleTextView.setText(R.string.video_preview_title_placeholder);
         mVideoDescriptionTextView.setText(null);
         mThumbnailListener.loadNewThumbnail(mCurrentVideo.videoId);
@@ -167,14 +168,14 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
         public void onInitializationSuccess(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {
             loader.setOnThumbnailLoadedListener(this);
             mLoader = loader;
-            // view.setImageResource(R.drawable.loading_thumbnail);
+            view.setImageResource(R.drawable.loading_placeholder);
             String videoId = (String) view.getTag();
             mLoader.setVideo(videoId);
         }
 
         @Override
         public void onInitializationFailure(YouTubeThumbnailView view, YouTubeInitializationResult loader) {
-            // view.setImageResource(R.drawable.no_thumbnail);
+            view.setImageResource(R.drawable.loading_placeholder);
         }
 
         @Override
@@ -183,7 +184,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
 
         @Override
         public void onThumbnailError(YouTubeThumbnailView view, YouTubeThumbnailLoader.ErrorReason errorReason) {
-            // view.setImageResource(R.drawable.no_thumbnail);
+            view.setImageResource(R.drawable.loading_placeholder);
         }
     }
 
