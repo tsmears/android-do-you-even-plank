@@ -3,6 +3,8 @@ package com.doyouevenplank.android.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,7 +12,10 @@ import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
 import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.app.SessionManager;
+import com.doyouevenplank.android.model.Session;
 import com.doyouevenplank.android.model.Video;
+import com.doyouevenplank.android.network.YouTubeApi;
+import com.doyouevenplank.android.network.YouTubeVideoMetadataResponse;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
@@ -20,19 +25,22 @@ import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PreviewVideoActivity extends DoYouEvenPlankActivity {
 
     private static final String EXTRA_DURATION = "extra_duration";
 
-    @BindView(R.id.video_thumbnail_view)
-    YouTubeThumbnailView mVideoThumbnailView;
-    @BindView(R.id.video_title_textview)
-    TextView mVideoTitleTextView;
-    @BindView(R.id.action_plank_textview)
-    TextView mActionPlankTextView;
-    @BindView(R.id.action_skip_textview)
-    TextView mActionSkipTextView;
+    @BindView(R.id.video_thumbnail_view) YouTubeThumbnailView mVideoThumbnailView;
+    @BindView(R.id.video_title_textview) TextView mVideoTitleTextView;
+    @BindView(R.id.action_plank_textview) TextView mActionPlankTextView;
+    @BindView(R.id.action_skip_textview) TextView mActionSkipTextView;
+
+    private YouTubeApi mYouTubeApi;
 
     private Random mRandom;
     private ThumbnailListener mThumbnailListener;
@@ -55,6 +63,12 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
             finish();
             return;
         }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Config.YOUTUBE_API_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        mYouTubeApi = retrofit.create(YouTubeApi.class);
 
         mRandom = new Random();
 
@@ -94,8 +108,32 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
     }
 
     private void fetchAndSetVideoMetadata() {
-        mVideoTitleTextView.setText(mCurrentVideo.videoId);
+        mVideoTitleTextView.setText(R.string.video_preview_title_placeholder);
         mThumbnailListener.loadNewThumbnail(mCurrentVideo.videoId);
+
+        Call<YouTubeVideoMetadataResponse> request = mYouTubeApi.getVideoMetadataPayload(mCurrentVideo.videoId, Config.YOUTUBE_API_KEY);
+        request.enqueue(new Callback<YouTubeVideoMetadataResponse>() {
+            @Override
+            public void onResponse(Call<YouTubeVideoMetadataResponse> call, Response<YouTubeVideoMetadataResponse> response) {
+                YouTubeVideoMetadataResponse responseObject = response.body();
+                if (responseObject == null) {
+                    return;
+                }
+                if (responseObject.items == null || responseObject.items.size() == 0) {
+                    return;
+                }
+                YouTubeVideoMetadataResponse.Video video = responseObject.items.get(0);
+                if (!TextUtils.equals(mCurrentVideo.videoId, video.id)) {
+                    return;
+                }
+                mVideoTitleTextView.setText(video.snippet.title);
+            }
+
+            @Override
+            public void onFailure(Call<YouTubeVideoMetadataResponse> call, Throwable t) {
+                Log.e(Config.LOG_WARNING_TAG, "error fetching video metadata");
+            }
+        });
     }
 
     private final class ThumbnailListener implements YouTubeThumbnailView.OnInitializedListener, YouTubeThumbnailLoader.OnThumbnailLoadedListener {
