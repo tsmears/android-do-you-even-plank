@@ -71,7 +71,7 @@ public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapte
 
     @Override
     public int getItemCount() {
-        return Config.PLANK_CHOICE_DURATIONS.length;
+        return Config.PLANK_CHOICE_DURATIONS.length + 1;
     }
 
     public static class TextViewItemViewHolder extends RecyclerView.ViewHolder {

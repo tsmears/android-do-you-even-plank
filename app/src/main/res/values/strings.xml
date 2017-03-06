@@ -6,6 +6,7 @@
 
     <string name="pick_duration_header_message">How long can you plank?</string>
 
+    <string name="error_no_videos_found_toast">Sorry, no videos found</string>
     <string name="video_preview_title_placeholder">Loading&#8230;</string>
     <string name="action_plank">Plank!</string>
     <string name="action_skip">Skip</string>

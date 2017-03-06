@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
@@ -74,6 +75,12 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
 
         // get a random video of the specified duration
         final List<Video> videos = SessionManager.getInstance().getVideosForDuration(duration);
+        if (videos == null || videos.size() == 0) {
+            Toast.makeText(this, R.string.error_no_videos_found_toast, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         int randomIndex = mRandom.nextInt(videos.size());
         mCurrentVideo = videos.get(randomIndex);
 
@@ -104,7 +111,9 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
     public void onDestroy() {
         super.onDestroy();
 
-        mThumbnailListener.releaseLoader();
+        if (mThumbnailListener != null) {
+            mThumbnailListener.releaseLoader();
+        }
     }
 
     private void fetchAndSetVideoMetadata() {
