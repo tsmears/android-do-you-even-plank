@@ -6,6 +6,26 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="PickDurationButtonStyle">
+        <item name="android:textColor">@color/plank_blue</item>
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:layout_height">40dip</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="PreviewVideoActionButtonStyle">
+        <item name="android:textColor">@color/plank_blue</item>
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:layout_height">48dip</item>
+        <item name="android:layout_width">240dip</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
 </resources>

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +16,7 @@ import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.app.SessionManager;
 import com.doyouevenplank.android.util.StringUtils;
 
-public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapter.TextViewItemViewHolder> {
+public class PickDurationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static int TYPE_HEADER_ITEM = 0;
     private static int TYPE_DURATION_ITEM = 1;
@@ -36,27 +37,29 @@ public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapte
     }
 
     @Override
-    public PickDurationAdapter.TextViewItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         if (viewType == TYPE_HEADER_ITEM) {
             TextView textView = (TextView) LayoutInflater.from(context).inflate(R.layout.pick_duration_header_item, parent, false);
-            return new TextViewItemViewHolder(textView);
+            return new HeaderItemViewHolder(textView);
         } else { // assume viewType == TYPE_DURATION_ITEM) {
-            TextView textView = (TextView) LayoutInflater.from(context).inflate(R.layout.pick_duration_duration_item, parent, false);
-            return new TextViewItemViewHolder(textView);
+            FrameLayout frameLayout = (FrameLayout) LayoutInflater.from(context).inflate(R.layout.pick_duration_duration_item, parent, false);
+            return new DurationItemViewHolder(frameLayout);
         }
     }
 
     @Override
-    public void onBindViewHolder(PickDurationAdapter.TextViewItemViewHolder holder, int position) {
-        final Context context = holder.textView.getContext();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final Context context = holder.itemView.getContext();
         int viewType = this.getItemViewType(position);
         if (viewType == TYPE_HEADER_ITEM) {
             // do nothing; the header is static
         } else { // assume viewType == TYPE_DURATION_ITEM) {
             final int duration = Config.PLANK_CHOICE_DURATIONS[position - 1];
-            holder.textView.setText(StringUtils.getTimeStringFromIntDuration(duration));
-            holder.textView.setOnClickListener(new View.OnClickListener() {
+
+            DurationItemViewHolder castedHolder = (DurationItemViewHolder) holder;
+            castedHolder.textView.setText(StringUtils.getTimeStringFromIntDuration(duration));
+            castedHolder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (SessionManager.getInstance().isReady()) {
@@ -74,13 +77,25 @@ public class PickDurationAdapter extends RecyclerView.Adapter<PickDurationAdapte
         return Config.PLANK_CHOICE_DURATIONS.length + 1;
     }
 
-    public static class TextViewItemViewHolder extends RecyclerView.ViewHolder {
+    public static class HeaderItemViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textView;
 
-        public TextViewItemViewHolder(TextView textView) {
+        public HeaderItemViewHolder(TextView textView) {
             super(textView);
             this.textView = textView;
+        }
+
+    }
+
+    public static class DurationItemViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView textView;
+
+        public DurationItemViewHolder(FrameLayout frameLayout) {
+            super(frameLayout);
+
+            textView = (TextView) frameLayout.findViewById(R.id.text_view);
         }
 
     }
