@@ -12,7 +12,6 @@ import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
 import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.app.SessionManager;
-import com.doyouevenplank.android.model.Session;
 import com.doyouevenplank.android.model.Video;
 import com.doyouevenplank.android.network.YouTubeApi;
 import com.doyouevenplank.android.network.YouTubeVideoMetadataResponse;
@@ -37,6 +36,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
 
     @BindView(R.id.video_thumbnail_view) YouTubeThumbnailView mVideoThumbnailView;
     @BindView(R.id.video_title_textview) TextView mVideoTitleTextView;
+    @BindView(R.id.video_description_textview) TextView mVideoDescriptionTextView;
     @BindView(R.id.action_plank_textview) TextView mActionPlankTextView;
     @BindView(R.id.action_skip_textview) TextView mActionSkipTextView;
 
@@ -109,6 +109,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
 
     private void fetchAndSetVideoMetadata() {
         mVideoTitleTextView.setText(R.string.video_preview_title_placeholder);
+        mVideoDescriptionTextView.setText(null);
         mThumbnailListener.loadNewThumbnail(mCurrentVideo.videoId);
 
         Call<YouTubeVideoMetadataResponse> request = mYouTubeApi.getVideoMetadataPayload(mCurrentVideo.videoId, Config.YOUTUBE_API_KEY);
@@ -127,6 +128,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
                     return;
                 }
                 mVideoTitleTextView.setText(video.snippet.title);
+                mVideoDescriptionTextView.setText(video.snippet.description);
             }
 
             @Override
