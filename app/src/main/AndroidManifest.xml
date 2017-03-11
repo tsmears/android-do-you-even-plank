@@ -11,6 +11,11 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:name=".activity.base.RequiresNetworkActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
             android:name=".activity.PickDurationActivity"
             android:screenOrientation="landscape"
             android:launchMode="singleTask">
