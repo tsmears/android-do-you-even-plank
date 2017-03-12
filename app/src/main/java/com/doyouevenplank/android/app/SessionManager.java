@@ -44,7 +44,7 @@ public class SessionManager {
     }
 
     public static synchronized SessionManager getInstance() {
-        if (sInstance == null || sInstance.mSession == null) {
+        if (sInstance == null) {
             sInstance = new SessionManager();
         }
         return sInstance;
