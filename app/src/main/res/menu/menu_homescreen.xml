@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/menu_history"
+            android:icon="@drawable/ic_access_time_black_24dp"
+            android:title="@string/history"/>
+        <item
+            android:id="@+id/menu_support"
+            android:icon="@drawable/ic_chat_bubble_outline_black_24dp"
+            android:title="@string/support"/>
+    </group>
+
+    <!-- <item android:title="Sub items"> -->
+    <item android:title="@string/about">
+        <menu>
+            <item
+                android:id="@+id/menu_open_source_attributions"
+                android:title="@string/open_source_attributions"/>
+            <item
+                android:id="@+id/menu_about"
+                android:title="@string/about"/>
+        </menu>
+    </item>
+
+</menu>

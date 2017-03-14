@@ -2,6 +2,14 @@
     <string name="app_name">Do You Even Plank</string>
     <string name="welcome_screen_message">Do You Even Plank?</string>
 
+    <string name="menu">Menu</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="history">My History</string>
+    <string name="support">Support</string>
+    <string name="open_source_attributions">Libraries we use</string>
+    <string name="about">About</string>
+
     <string name="network_required_prompt">You must be connected to the network in order to use this app.</string>
     <string name="network_settings_label">Go to network settings</string>
 
