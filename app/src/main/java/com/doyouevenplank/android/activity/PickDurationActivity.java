@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
+import com.doyouevenplank.android.activity.menu.OpenSourceAttributionsActivity;
 import com.doyouevenplank.android.activity.menu.SupportActivity;
 import com.doyouevenplank.android.component.PickDurationAdapter;
 
@@ -51,10 +52,10 @@ public class PickDurationActivity extends DoYouEvenPlankActivity {
                     case R.id.menu_support:
                         SupportActivity.start(PickDurationActivity.this);
                         break;
-                    case R.id.menu_open_source_attributions: // TODO
+                    case R.id.menu_open_source_attributions:
+                        OpenSourceAttributionsActivity.start(PickDurationActivity.this);
                         break;
-                    case R.id.menu_about: // TODO
-                        break;
+                    // case R.id.menu_about:
                 }
                 return true;
             }

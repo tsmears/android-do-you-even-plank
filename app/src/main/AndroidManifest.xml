@@ -50,6 +50,12 @@
             android:parentActivityName=".activity.PickDurationActivity">
         </activity>
 
+        <activity
+            android:name=".activity.menu.OpenSourceAttributionsActivity"
+            android:screenOrientation="landscape"
+            android:parentActivityName=".activity.PickDurationActivity">
+        </activity>
+
     </application>
 
 </manifest>

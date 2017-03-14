@@ -22,9 +22,11 @@
             <item
                 android:id="@+id/menu_open_source_attributions"
                 android:title="@string/open_source_attributions"/>
+            <!--
             <item
                 android:id="@+id/menu_about"
                 android:title="@string/about"/>
+                -->
         </menu>
     </item>
 

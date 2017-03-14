@@ -4,6 +4,8 @@ public class Config {
 
     public static final String LOG_WARNING_TAG = "DoYouEvenPlank";
 
+    public static final String OPEN_SOURCE_ATTRIBUTIONS_SHARE_LINK = "https://airtable.com/shrCoKNIwUU8zc8bt";
+
     // credentials for the developer account are in the Airtable base linked to in the shared Drive folder
     public static final String YOUTUBE_API_KEY = "AIzaSyDjPkbaxgKE86qsTg-t7Z04ufIya7yAlRE";
     public static final String YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3/";
