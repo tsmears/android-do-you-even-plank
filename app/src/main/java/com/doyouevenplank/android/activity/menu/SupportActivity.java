@@ -1,4 +1,4 @@
-package com.doyouevenplank.android.activity;
+package com.doyouevenplank.android.activity.menu;
 
 import android.content.Context;
 import android.content.Intent;

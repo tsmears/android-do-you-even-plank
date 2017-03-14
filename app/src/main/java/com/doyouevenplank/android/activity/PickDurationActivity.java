@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
+import com.doyouevenplank.android.activity.menu.SupportActivity;
 import com.doyouevenplank.android.component.PickDurationAdapter;
 
 import butterknife.BindView;
@@ -44,6 +45,8 @@ public class PickDurationActivity extends DoYouEvenPlankActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_history: // TODO
+                        break;
+                    case R.id.menu_settings: // TODO
                         break;
                     case R.id.menu_support:
                         SupportActivity.start(PickDurationActivity.this);

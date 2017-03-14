@@ -45,7 +45,7 @@
         </activity>
 
         <activity
-            android:name=".activity.SupportActivity"
+            android:name=".activity.menu.SupportActivity"
             android:screenOrientation="landscape"
             android:parentActivityName=".activity.PickDurationActivity">
         </activity>

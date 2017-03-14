@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_access_time_black_24dp"
             android:title="@string/history"/>
         <item
+            android:id="@+id/menu_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/settings"/>
+        <item
             android:id="@+id/menu_support"
             android:icon="@drawable/ic_chat_bubble_outline_black_24dp"
             android:title="@string/support"/>
