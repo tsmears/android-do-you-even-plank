@@ -44,6 +44,12 @@
             android:parentActivityName=".activity.PreviewVideoActivity">
         </activity>
 
+        <activity
+            android:name=".activity.SupportActivity"
+            android:screenOrientation="landscape"
+            android:parentActivityName=".activity.PickDurationActivity">
+        </activity>
+
     </application>
 
 </manifest>

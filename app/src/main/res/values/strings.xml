@@ -2,6 +2,9 @@
     <string name="app_name">Do You Even Plank</string>
     <string name="welcome_screen_message">Do You Even Plank?</string>
 
+    <string name="network_required_prompt">You must be connected to the network in order to use this app.</string>
+    <string name="network_settings_label">Go to network settings</string>
+
     <string name="menu">Menu</string>
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
@@ -10,8 +13,7 @@
     <string name="open_source_attributions">Libraries we use</string>
     <string name="about">About</string>
 
-    <string name="network_required_prompt">You must be connected to the network in order to use this app.</string>
-    <string name="network_settings_label">Go to network settings</string>
+    <string name="support_message">Please send any inquiries to hello@doyouevenplank.com.</string>
 
     <string name="error_fetching_video_metadata">Error fetching video information. Please try again later.</string>
     <string name="error_youtube_player">YouTube player error: %1$s</string>

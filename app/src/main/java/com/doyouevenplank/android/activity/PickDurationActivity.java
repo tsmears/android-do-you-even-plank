@@ -45,7 +45,8 @@ public class PickDurationActivity extends DoYouEvenPlankActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.menu_history: // TODO
                         break;
-                    case R.id.menu_support: // TODO
+                    case R.id.menu_support:
+                        SupportActivity.start(PickDurationActivity.this);
                         break;
                     case R.id.menu_open_source_attributions: // TODO
                         break;
