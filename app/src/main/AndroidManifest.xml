@@ -45,6 +45,18 @@
         </activity>
 
         <activity
+            android:name=".activity.menu.ListHistoryActivity"
+            android:screenOrientation="landscape"
+            android:parentActivityName=".activity.PickDurationActivity">
+        </activity>
+
+        <activity
+            android:name=".activity.menu.SettingsActivity"
+            android:screenOrientation="landscape"
+            android:parentActivityName=".activity.PickDurationActivity">
+        </activity>
+
+        <activity
             android:name=".activity.menu.SupportActivity"
             android:screenOrientation="landscape"
             android:parentActivityName=".activity.PickDurationActivity">
