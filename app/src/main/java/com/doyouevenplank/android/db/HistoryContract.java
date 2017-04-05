@@ -11,6 +11,7 @@ public final class HistoryContract {
         public static final String TABLE_NAME = "history";
         public static final String COLUMN_NAME_VIDEO_ID = "videoId";
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+        public static final String COLUMN_NAME_START_TIME_SECONDS = "startTimeSeconds";
         public static final String COLUMN_NAME_DURATION_SECONDS = "durationSeconds";
 
     }

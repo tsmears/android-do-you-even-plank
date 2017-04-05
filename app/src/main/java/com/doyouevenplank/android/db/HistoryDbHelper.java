@@ -15,6 +15,7 @@ public class HistoryDbHelper extends SQLiteOpenHelper {
                     HistoryContract.HistoryEntry._ID + " INTEGER PRIMARY KEY," +
                     HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID + " TEXT," +
                     HistoryContract.HistoryEntry.COLUMN_NAME_TIMESTAMP + " TEXT," + // SQLite doesn't have a datetime type, so we store as ISO 8601 strings
+                    HistoryContract.HistoryEntry.COLUMN_NAME_START_TIME_SECONDS + " INTEGER," +
                     HistoryContract.HistoryEntry.COLUMN_NAME_DURATION_SECONDS + " INTEGER)";
 
     private static final String SQL_DELETE_ENTRIES =

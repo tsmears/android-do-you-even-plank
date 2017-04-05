@@ -38,6 +38,7 @@ public class HistoryDbAccessor {
                 HistoryContract.HistoryEntry._ID,
                 HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID,
                 HistoryContract.HistoryEntry.COLUMN_NAME_TIMESTAMP,
+                HistoryContract.HistoryEntry.COLUMN_NAME_START_TIME_SECONDS,
                 HistoryContract.HistoryEntry.COLUMN_NAME_DURATION_SECONDS,
         };
 

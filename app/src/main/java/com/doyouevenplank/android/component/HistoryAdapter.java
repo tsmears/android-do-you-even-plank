@@ -13,11 +13,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doyouevenplank.android.R;
+import com.doyouevenplank.android.activity.VideoActivity;
 import com.doyouevenplank.android.activity.menu.ListHistoryActivity;
 import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.db.HistoryContract;
 import com.doyouevenplank.android.network.YouTubeApi;
 import com.doyouevenplank.android.network.YouTubeVideoMetadataResponse;
+import com.doyouevenplank.android.util.StringUtils;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import retrofit2.Call;
@@ -61,13 +63,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 final String videoId = getVideoId(cursor);
                 String videoTimestamp = getVideoTimestamp(cursor);
-                int videoDurationSeconds = getVideoDurationSeconds(cursor);
+                final int videoStartTimeSeconds = getVideoStartTimeSeconds(cursor);
+                final int videoDurationSeconds = getVideoDurationSeconds(cursor);
 
                 thumbnailView.setTag(videoId);
                 thumbnailView.initialize(Config.YOUTUBE_API_KEY, mThumbnailListener);
                 mThumbnailListener.loadNewThumbnail(videoId);
 
-                durationTextView.setText("" + videoDurationSeconds);
+                durationTextView.setText(StringUtils.getTimeStringFromIntDuration(videoDurationSeconds));
                 dateTextView.setText(videoTimestamp);
 
                 Call<YouTubeVideoMetadataResponse> request = mYouTubeApi.getVideoMetadataPayload(videoId, Config.YOUTUBE_API_KEY);
@@ -92,6 +95,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     @Override
                     public void onFailure(Call<YouTubeVideoMetadataResponse> call, Throwable t) {
                         Log.e(Config.LOG_WARNING_TAG, "error fetching video metadata");
+                    }
+                });
+
+                container.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        VideoActivity.start(mActivity, videoId, videoStartTimeSeconds, videoDurationSeconds);
                     }
                 });
             }
@@ -129,6 +139,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return null;
         }
         return cursor.getString(videoTimestampIndex);
+    }
+
+    private int getVideoStartTimeSeconds(Cursor cursor) {
+        int videoStartTimeIndex = cursor.getColumnIndex(HistoryContract.HistoryEntry.COLUMN_NAME_START_TIME_SECONDS);
+        if (videoStartTimeIndex == -1) {
+            return 0;
+        }
+        return cursor.getInt(videoStartTimeIndex);
     }
 
     private int getVideoDurationSeconds(Cursor cursor) {

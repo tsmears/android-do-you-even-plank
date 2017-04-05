@@ -32,10 +32,14 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     private int mVideoDurationSeconds;
 
     public static void start(Context caller, Video video) {
+        start(caller, video.videoId, video.startTimeSeconds, video.durationSeconds);
+    }
+
+    public static void start(Context caller, String videoId, int startTimeSeconds, int durationSeconds) {
         Intent intent = new Intent(caller, VideoActivity.class);
-        intent.putExtra(EXTRA_VIDEO_ID, video.videoId);
-        intent.putExtra(EXTRA_VIDEO_START_TIME_SECONDS, video.startTimeSeconds);
-        intent.putExtra(EXTRA_VIDEO_DURATION_SECONDS, video.durationSeconds);
+        intent.putExtra(EXTRA_VIDEO_ID, videoId);
+        intent.putExtra(EXTRA_VIDEO_START_TIME_SECONDS, startTimeSeconds);
+        intent.putExtra(EXTRA_VIDEO_DURATION_SECONDS, durationSeconds);
         caller.startActivity(intent);
     }
 
