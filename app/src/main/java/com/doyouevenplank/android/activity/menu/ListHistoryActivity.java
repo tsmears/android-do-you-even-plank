@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -40,9 +41,13 @@ public class ListHistoryActivity extends DoYouEvenPlankActivity {
 
         mThumbnailListener = new YouTubeThumbnailListener();
 
+        int orientation = LinearLayoutManager.VERTICAL;
         mHistoryRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mLayoutManager = new LinearLayoutManager(this, orientation, false);
         mHistoryRecyclerView.setLayoutManager(mLayoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, orientation);
+        mHistoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
         Cursor historyItemsCursor = HistoryDbAccessor.getInstance(this).getHistoryItems();
         mAdapter = new HistoryAdapter(this, historyItemsCursor, mThumbnailListener);
