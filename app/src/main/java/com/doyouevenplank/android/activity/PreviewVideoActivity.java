@@ -13,6 +13,7 @@ import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
 import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.app.SessionManager;
+import com.doyouevenplank.android.component.YouTubeThumbnailListener;
 import com.doyouevenplank.android.model.Video;
 import com.doyouevenplank.android.network.YouTubeApi;
 import com.doyouevenplank.android.network.YouTubeVideoMetadataResponse;
@@ -44,7 +45,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
     private YouTubeApi mYouTubeApi;
 
     private Random mRandom;
-    private ThumbnailListener mThumbnailListener;
+    private YouTubeThumbnailListener mThumbnailListener;
     private Video mCurrentVideo;
 
     public static void start(Context caller, int duration) {
@@ -84,7 +85,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
         int randomIndex = mRandom.nextInt(videos.size());
         mCurrentVideo = videos.get(randomIndex);
 
-        mThumbnailListener = new ThumbnailListener();
+        mThumbnailListener = new YouTubeThumbnailListener();
         mVideoThumbnailView.setTag(mCurrentVideo.videoId);
         mVideoThumbnailView.initialize(Config.YOUTUBE_API_KEY, mThumbnailListener);
         this.fetchAndSetVideoMetadata();
@@ -146,46 +147,6 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
                 Log.e(Config.LOG_WARNING_TAG, "error fetching video metadata");
             }
         });
-    }
-
-    private final class ThumbnailListener implements YouTubeThumbnailView.OnInitializedListener, YouTubeThumbnailLoader.OnThumbnailLoadedListener {
-
-        private YouTubeThumbnailLoader mLoader;
-
-        public void releaseLoader() {
-            if (mLoader != null) {
-                mLoader.release();
-            }
-        }
-
-        public void loadNewThumbnail(String videoId) {
-            if (mLoader != null) {
-                mLoader.setVideo(videoId);
-            }
-        }
-
-        @Override
-        public void onInitializationSuccess(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {
-            loader.setOnThumbnailLoadedListener(this);
-            mLoader = loader;
-            view.setImageResource(R.drawable.loading_placeholder);
-            String videoId = (String) view.getTag();
-            mLoader.setVideo(videoId);
-        }
-
-        @Override
-        public void onInitializationFailure(YouTubeThumbnailView view, YouTubeInitializationResult loader) {
-            view.setImageResource(R.drawable.loading_placeholder);
-        }
-
-        @Override
-        public void onThumbnailLoaded(YouTubeThumbnailView view, String videoId) {
-        }
-
-        @Override
-        public void onThumbnailError(YouTubeThumbnailView view, YouTubeThumbnailLoader.ErrorReason errorReason) {
-            view.setImageResource(R.drawable.loading_placeholder);
-        }
     }
 
 }

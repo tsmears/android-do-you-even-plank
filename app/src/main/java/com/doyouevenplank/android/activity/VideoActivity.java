@@ -8,9 +8,12 @@ import android.os.Handler;
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.YouTubeFailureRecoveryActivity;
 import com.doyouevenplank.android.app.Config;
+import com.doyouevenplank.android.db.HistoryDbAccessor;
 import com.doyouevenplank.android.model.Video;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+
+import java.util.Date;
 
 public class VideoActivity extends YouTubeFailureRecoveryActivity {
 
@@ -67,6 +70,9 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
                 public void run() {
                     mPlayer.pause();
                     VideoActivity.this.finish();
+
+                    // insert the video into the history db
+                    HistoryDbAccessor.getInstance(VideoActivity.this).insertHistoryItem(mVideoId, new Date(), mVideoDurationSeconds);
                 }
             };
 
