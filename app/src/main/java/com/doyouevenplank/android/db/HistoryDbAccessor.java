@@ -5,13 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import com.doyouevenplank.android.util.StringUtils;
+
 import java.util.Date;
 
 public class HistoryDbAccessor {
-
-    private static final DateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
 
     private static HistoryDbAccessor sInstance;
 
@@ -69,7 +67,7 @@ public class HistoryDbAccessor {
 
         ContentValues values = new ContentValues();
         values.put(HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID, videoId);
-        values.put(HistoryContract.HistoryEntry.COLUMN_NAME_TIMESTAMP, ISO_DATE_FORMAT.format(timestamp));
+        values.put(HistoryContract.HistoryEntry.COLUMN_NAME_TIMESTAMP, StringUtils.dateToIsoString(timestamp));
         values.put(HistoryContract.HistoryEntry.COLUMN_NAME_DURATION_SECONDS, durationSeconds);
 
         long newRowId = db.insert(HistoryContract.HistoryEntry.TABLE_NAME, null, values);

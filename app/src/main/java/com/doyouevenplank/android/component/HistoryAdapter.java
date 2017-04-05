@@ -71,7 +71,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mThumbnailListener.loadNewThumbnail(videoId);
 
                 durationTextView.setText(StringUtils.getTimeStringFromIntDuration(videoDurationSeconds));
-                dateTextView.setText(videoTimestamp);
+                dateTextView.setText(StringUtils.isoStringToFriendlyString(videoTimestamp));
 
                 Call<YouTubeVideoMetadataResponse> request = mYouTubeApi.getVideoMetadataPayload(videoId, Config.YOUTUBE_API_KEY);
                 request.enqueue(new Callback<YouTubeVideoMetadataResponse>() {

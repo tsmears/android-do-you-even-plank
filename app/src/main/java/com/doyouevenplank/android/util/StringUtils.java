@@ -5,7 +5,27 @@ import android.text.TextUtils;
 
 import com.doyouevenplank.android.app.Config;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class StringUtils {
+
+    private static final SimpleDateFormat DATE_FRIENDLY_FORMAT = new SimpleDateFormat("LLLL' 'd', 'yyyy");
+    private static final SimpleDateFormat DATE_ISO_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+
+    public static String dateToIsoString(Date date) {
+        return DATE_ISO_FORMAT.format(date);
+    }
+
+    public static String isoStringToFriendlyString(String isoString) {
+        try {
+            Date date = DATE_ISO_FORMAT.parse(isoString);
+            return DATE_FRIENDLY_FORMAT.format(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
 
     public static String getTimeStringFromIntDuration(int durationSeconds) {
         int minutes = durationSeconds / 60;
