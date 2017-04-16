@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.YouTubeFailureRecoveryActivity;
 import com.doyouevenplank.android.app.Config;
+import com.doyouevenplank.android.app.SharedPreferencesManager;
 import com.doyouevenplank.android.component.VideoActivitySoundPoolPlayer;
 import com.doyouevenplank.android.db.HistoryDbAccessor;
 import com.doyouevenplank.android.model.Video;
@@ -75,6 +76,8 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
 
         mCountdownTextView = (TextView) findViewById(R.id.countdown_textview);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        int progressBarVisibility = SharedPreferencesManager.getInstance(this).getShouldShowProgressBarInVideoActivity() ? View.VISIBLE : View.GONE;
+        mProgressBar.setVisibility(progressBarVisibility);
 
         mYouTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
         mYouTubePlayerFragment.initialize(Config.YOUTUBE_API_KEY, this);
