@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 public class WelcomeActivity extends DoYouEvenPlankActivity {
 
     // after this amount of time, we'll assume the network request failed, and update the text accordingly
-    private static final int SET_TIMEOUT_TEXT_RUNNABLE_MILLIS = 5000;
+    private static final int SET_TIMEOUT_TEXT_RUNNABLE_MILLIS = 8000;
     private static final int CHECK_IF_READY_POLL_FREQUENCY_MILLIS = 500;
 
     @BindView(R.id.welcome_screen_error_message) TextView mErrorMessage;

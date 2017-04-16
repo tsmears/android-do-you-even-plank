@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.doyouevenplank.android.R;
@@ -26,6 +27,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
 
     private YouTubePlayerFragment mYouTubePlayerFragment;
     private TextView mCountdownTextView;
+    private ProgressBar mProgressBar;
 
     private YouTubePlayer mVideoPlayer;
     private VideoActivitySoundPoolPlayer mSoundPlayer;
@@ -36,6 +38,8 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     private Runnable mBeginRunnable;
     private Runnable mPlayVideoRunnable;
     private Runnable mFinishPlankingRunnable;
+    private int mVideoProgressSeconds;
+    private Runnable mUpdateProgressBarRunnable;
 
     private String mVideoId;
     private int mVideoStartTimeSeconds;
@@ -70,6 +74,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
         }
 
         mCountdownTextView = (TextView) findViewById(R.id.countdown_textview);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         mYouTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
         mYouTubePlayerFragment.initialize(Config.YOUTUBE_API_KEY, this);
@@ -96,6 +101,10 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
             public void run() {
                 mCountdownTextView.setVisibility(View.GONE);
                 mVideoPlayer.loadVideo(mVideoId, mVideoStartTimeSeconds * 1000);
+
+                mVideoProgressSeconds = 0;
+                mProgressBar.setMax(mVideoDurationSeconds);
+                mHandler.post(mUpdateProgressBarRunnable);
                 mHandler.postDelayed(mFinishPlankingRunnable, mVideoDurationSeconds * 1000);
             }
         };
@@ -107,6 +116,14 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
 
                 // insert the video into the history db
                 HistoryDbAccessor.getInstance(VideoActivity.this).insertHistoryItem(mVideoId, new Date(), mVideoDurationSeconds);
+            }
+        };
+        mUpdateProgressBarRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mProgressBar.setProgress(mVideoProgressSeconds);
+                mVideoProgressSeconds += 1;
+                mHandler.postDelayed(mUpdateProgressBarRunnable, 1000); // update the progress bar every second
             }
         };
     }
@@ -128,14 +145,22 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     public void onDestroy() {
         super.onDestroy();
 
-        if (mFinishPlankingRunnable != null) {
-            mHandler.removeCallbacks(mFinishPlankingRunnable);
+        Runnable[] runnablesThatNeedToBeRemoved = new Runnable[]{
+                mCountdownRunnable,
+                mBeginRunnable,
+                mPlayVideoRunnable,
+                mFinishPlankingRunnable,
+                mUpdateProgressBarRunnable,
+        };
+        for (Runnable runnable : runnablesThatNeedToBeRemoved) {
+            if (runnable != null) {
+                mHandler.removeCallbacks(runnable);
+            }
         }
 
         if (mVideoPlayer != null) {
             mVideoPlayer.release();
         }
-
         if (mSoundPlayer != null) {
             mSoundPlayer.release();
         }

@@ -5,11 +5,26 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true">
 
-    <fragment
-        android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-        android:id="@+id/youtube_fragment"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="4dip"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:background="@color/black"
+            android:progressDrawable="@drawable/video_activity_progress_bar_background"/>
+
+        <fragment
+            android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+            android:id="@+id/youtube_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/progress_bar"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/countdown_textview"
