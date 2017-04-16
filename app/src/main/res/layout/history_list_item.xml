@@ -6,11 +6,13 @@
     android:paddingStart="8dip"
     android:paddingEnd="8dip">
 
-    <com.google.android.youtube.player.YouTubeThumbnailView
+    <ImageView
         android:id="@+id/video_thumbnail_view"
         android:layout_width="152dip"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:paddingTop="4dip"
+        android:paddingBottom="4dip"/>
 
     <LinearLayout
         android:id="@+id/duration_and_date"

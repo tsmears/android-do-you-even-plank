@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +21,7 @@ import com.doyouevenplank.android.db.HistoryContract;
 import com.doyouevenplank.android.network.YouTubeApi;
 import com.doyouevenplank.android.network.YouTubeVideoMetadataResponse;
 import com.doyouevenplank.android.util.StringUtils;
-import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,13 +33,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private ListHistoryActivity mActivity;
     private CursorAdapter mCursorAdapter;
-    private YouTubeThumbnailListener mThumbnailListener;
 
     private YouTubeApi mYouTubeApi;
 
-    public HistoryAdapter(ListHistoryActivity activity, Cursor c, YouTubeThumbnailListener thumbnailListener) {
+    public HistoryAdapter(ListHistoryActivity activity, Cursor c) {
         mActivity = activity;
-        mThumbnailListener = thumbnailListener;
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Config.YOUTUBE_API_BASE_URL)
@@ -55,7 +54,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 RelativeLayout container = (RelativeLayout) view;
-                YouTubeThumbnailView thumbnailView = (YouTubeThumbnailView) container.findViewById(R.id.video_thumbnail_view);
+                final ImageView thumbnailView = (ImageView) container.findViewById(R.id.video_thumbnail_view);
                 final TextView titleTextView = (TextView) container.findViewById(R.id.title);
                 final TextView subtitleTextView = (TextView) container.findViewById(R.id.subtitle);
                 TextView durationTextView = (TextView) container.findViewById(R.id.duration);
@@ -65,10 +64,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 String videoTimestamp = getVideoTimestamp(cursor);
                 final int videoStartTimeSeconds = getVideoStartTimeSeconds(cursor);
                 final int videoDurationSeconds = getVideoDurationSeconds(cursor);
-
-                thumbnailView.setTag(videoId);
-                thumbnailView.initialize(Config.YOUTUBE_API_KEY, mThumbnailListener);
-                mThumbnailListener.loadNewThumbnail(videoId);
 
                 durationTextView.setText(StringUtils.getTimeStringFromIntDuration(videoDurationSeconds));
                 dateTextView.setText(StringUtils.isoStringToFriendlyString(videoTimestamp));
@@ -90,6 +85,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         }
                         titleTextView.setText(video.snippet.title);
                         subtitleTextView.setText(video.snippet.description);
+                        Picasso.with(mContext)
+                                .load(video.snippet.getDefaultThumbnailUrl())
+                                .into(thumbnailView);
                     }
 
                     @Override

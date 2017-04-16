@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
 import com.doyouevenplank.android.component.HistoryAdapter;
-import com.doyouevenplank.android.component.YouTubeThumbnailListener;
 import com.doyouevenplank.android.db.HistoryDbAccessor;
 
 import butterknife.BindView;
@@ -23,8 +22,6 @@ public class ListHistoryActivity extends DoYouEvenPlankActivity {
 
     private RecyclerView.LayoutManager mLayoutManager;
     private HistoryAdapter mAdapter;
-
-    private YouTubeThumbnailListener mThumbnailListener;
 
     public static void start(Context caller) {
         Intent intent = new Intent(caller, ListHistoryActivity.class);
@@ -39,8 +36,6 @@ public class ListHistoryActivity extends DoYouEvenPlankActivity {
 
         getSupportActionBar().setTitle(R.string.history);
 
-        mThumbnailListener = new YouTubeThumbnailListener();
-
         int orientation = LinearLayoutManager.VERTICAL;
         mHistoryRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this, orientation, false);
@@ -50,17 +45,8 @@ public class ListHistoryActivity extends DoYouEvenPlankActivity {
         mHistoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
         Cursor historyItemsCursor = HistoryDbAccessor.getInstance(this).getHistoryItems();
-        mAdapter = new HistoryAdapter(this, historyItemsCursor, mThumbnailListener);
+        mAdapter = new HistoryAdapter(this, historyItemsCursor);
         mHistoryRecyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if (mThumbnailListener != null) {
-            mThumbnailListener.releaseLoader();
-        }
     }
 
 }
