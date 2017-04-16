@@ -87,6 +87,10 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
                 mSoundPlayer.playSoundFromResource(R.raw.ready);
                 mCountdownTextView.setText("" + mCountdownInt);
                 mCountdownInt -= 1;
+
+                // start loading the video in the background, but paused, so that we can start playing it immediately once the countdown is finished
+                mVideoPlayer.loadVideo(mVideoId, mVideoStartTimeSeconds * 1000);
+                mVideoPlayer.pause();
             }
         };
         mBeginRunnable = new Runnable() {
@@ -100,7 +104,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
             @Override
             public void run() {
                 mCountdownTextView.setVisibility(View.GONE);
-                mVideoPlayer.loadVideo(mVideoId, mVideoStartTimeSeconds * 1000);
+                mVideoPlayer.play();
 
                 mVideoProgressSeconds = 0;
                 mProgressBar.setMax(mVideoDurationSeconds);
