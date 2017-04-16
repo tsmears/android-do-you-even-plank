@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.doyouevenplank.android.app.Config;
+import com.doyouevenplank.android.network.GoogleSheetsDurationPayload;
 import com.doyouevenplank.android.network.GoogleSheetsVideoMetadataPayload;
 import com.doyouevenplank.android.util.StringUtils;
 
@@ -14,10 +15,17 @@ public class Session {
 
     // use SparseArray to avoid autoboxing
     private SparseArray<List<Video>> mVideosByDuration;
+    private int[] mDurationChoices;
 
-    public Session(GoogleSheetsVideoMetadataPayload payload) {
+    public Session() {
         mVideosByDuration = new SparseArray<List<Video>>();
+    }
 
+    public boolean isReady() {
+        return mVideosByDuration.size() != 0 && mDurationChoices != null && mDurationChoices[mDurationChoices.length - 1] != 0;
+    }
+
+    public void readVideoMetadataPayload(GoogleSheetsVideoMetadataPayload payload) {
         for (GoogleSheetsVideoMetadataPayload.Entry entry : payload.feed.entry) {
             try {
                 String videoId = StringUtils.getVideoIdFromGsxLink(entry.gsx$link.getString());
@@ -32,8 +40,20 @@ public class Session {
         }
     }
 
+    public void readDurationPayload(GoogleSheetsDurationPayload payload) {
+        mDurationChoices = new int[payload.feed.entry.size()];
+        for (int i = 0; i < payload.feed.entry.size(); i += 1) {
+            GoogleSheetsDurationPayload.Entry entry = payload.feed.entry.get(i);
+            mDurationChoices[i] = Integer.parseInt(entry.gsx$duration.getString());
+        }
+    }
+
     public List<Video> getVideosForDuration(int durationSeconds) {
         return mVideosByDuration.get(durationSeconds);
+    }
+
+    public int[] getDurationChoices() {
+        return mDurationChoices;
     }
 
     private void safeInsertIntoMap(Video video) {

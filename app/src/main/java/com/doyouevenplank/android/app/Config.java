@@ -16,16 +16,4 @@ public class Config {
     public static final String GOOGLE_SHEETS_VIDEO_METADATA_ENDPOINT_ID = "16HjsPso7jGQRJXP2Dnn_1maux0Oye_Vpr6bJzWSAsTY";
     public static final int YOUTUBE_VIDEO_ID_LENGTH = 11;
 
-    public static final int[] PLANK_CHOICE_DURATIONS = new int[]{
-            30,
-            45,
-            60,
-            75,
-            90,
-            105,
-            120,
-            150,
-            180,
-    };
-
 }

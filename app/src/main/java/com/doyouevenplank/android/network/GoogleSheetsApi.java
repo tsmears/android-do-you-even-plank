@@ -9,4 +9,7 @@ public interface GoogleSheetsApi {
     @GET("feeds/list/{endpointId}/1/public/values?alt=json")
     Call<GoogleSheetsVideoMetadataPayload> getVideoMetadataPayload(@Path("endpointId") String endpointId);
 
+    @GET("feeds/list/{endpointId}/2/public/values?alt=json")
+    Call<GoogleSheetsDurationPayload> getDurationPayload(@Path("endpointId") String endpointId);
+
 }

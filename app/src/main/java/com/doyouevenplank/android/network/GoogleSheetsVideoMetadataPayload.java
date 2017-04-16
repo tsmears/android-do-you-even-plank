@@ -1,5 +1,7 @@
 package com.doyouevenplank.android.network;
 
+import com.doyouevenplank.android.util.WrappedString;
+
 import java.util.List;
 
 /**
@@ -22,16 +24,6 @@ public class GoogleSheetsVideoMetadataPayload {
         public WrappedString gsx$genre;
         public WrappedString gsx$starttime;
         public WrappedString gsx$endtime;
-
-        public static class WrappedString {
-
-            private String $t;
-
-            public String getString() {
-                return $t;
-            }
-
-        }
 
     }
 

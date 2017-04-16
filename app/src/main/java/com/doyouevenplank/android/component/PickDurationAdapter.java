@@ -22,9 +22,11 @@ public class PickDurationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static int TYPE_DURATION_ITEM = 1;
 
     private PickDurationActivity mActivity;
+    private int[] mDurationChoices;
 
     public PickDurationAdapter(PickDurationActivity activity) {
         mActivity = activity;
+        mDurationChoices = SessionManager.getInstance().getDurationChoices();
     }
 
     @Override
@@ -55,7 +57,7 @@ public class PickDurationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (viewType == TYPE_HEADER_ITEM) {
             // do nothing; the header is static
         } else { // assume viewType == TYPE_DURATION_ITEM) {
-            final int duration = Config.PLANK_CHOICE_DURATIONS[position - 1];
+            final int duration = mDurationChoices[position - 1];
 
             DurationItemViewHolder castedHolder = (DurationItemViewHolder) holder;
             castedHolder.textView.setText(StringUtils.getTimeStringFromIntDuration(duration));
@@ -74,7 +76,7 @@ public class PickDurationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return Config.PLANK_CHOICE_DURATIONS.length + 1;
+        return mDurationChoices.length + 1;
     }
 
     public static class HeaderItemViewHolder extends RecyclerView.ViewHolder {
