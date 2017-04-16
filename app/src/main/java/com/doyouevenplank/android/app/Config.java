@@ -4,6 +4,8 @@ public class Config {
 
     public static final String LOG_WARNING_TAG = "DoYouEvenPlank";
 
+    public static final String PREFERENCE_FILE_KEY = "com.doyouevenplank.android.PREFERENCE_FILE_KEY";
+
     public static final String OPEN_SOURCE_ATTRIBUTIONS_SHARE_LINK = "https://airtable.com/shrCoKNIwUU8zc8bt";
 
     // credentials for the developer account are in the Airtable base linked to in the shared Drive folder

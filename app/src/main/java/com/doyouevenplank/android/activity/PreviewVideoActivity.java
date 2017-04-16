@@ -1,8 +1,10 @@
 package com.doyouevenplank.android.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,12 +15,11 @@ import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.DoYouEvenPlankActivity;
 import com.doyouevenplank.android.app.Config;
 import com.doyouevenplank.android.app.SessionManager;
+import com.doyouevenplank.android.app.SharedPreferencesManager;
 import com.doyouevenplank.android.component.YouTubeThumbnailListener;
 import com.doyouevenplank.android.model.Video;
 import com.doyouevenplank.android.network.YouTubeApi;
 import com.doyouevenplank.android.network.YouTubeVideoMetadataResponse;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import java.util.List;
@@ -93,8 +94,7 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
         mActionPlankTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                VideoActivity.start(PreviewVideoActivity.this, mCurrentVideo);
-                finish();
+                showAlertDialogThenVideoActivity();
             }
         });
 
@@ -114,6 +114,29 @@ public class PreviewVideoActivity extends DoYouEvenPlankActivity {
 
         if (mThumbnailListener != null) {
             mThumbnailListener.releaseLoader();
+        }
+    }
+
+    private void showAlertDialogThenVideoActivity() {
+        if (!SharedPreferencesManager.getInstance(this).getHasShownCountdownInfoPopup()) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setMessage(getResources().getString(R.string.countdown_info_popup_message))
+                    .setPositiveButton(R.string.countdown_info_popup_confirmation, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SharedPreferencesManager.getInstance(PreviewVideoActivity.this).setHasShownCountdownInfoPopup();
+
+                            VideoActivity.start(PreviewVideoActivity.this, mCurrentVideo);
+                            finish();
+                        }
+
+                    })
+                    .show();
+        } else {
+            VideoActivity.start(PreviewVideoActivity.this, mCurrentVideo);
+            finish();
         }
     }
 
