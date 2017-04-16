@@ -23,6 +23,9 @@ import com.doyouevenplank.android.network.YouTubeVideoMetadataResponse;
 import com.doyouevenplank.android.util.StringUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,9 +38,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private CursorAdapter mCursorAdapter;
 
     private YouTubeApi mYouTubeApi;
+    private Map<String, YouTubeVideoMetadataResponse.Video> mVideoByIdCache;
 
     public HistoryAdapter(ListHistoryActivity activity, Cursor c) {
         mActivity = activity;
+        mVideoByIdCache = new HashMap<String, YouTubeVideoMetadataResponse.Video>();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Config.YOUTUBE_API_BASE_URL)
@@ -60,6 +65,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 TextView durationTextView = (TextView) container.findViewById(R.id.duration);
                 TextView dateTextView = (TextView) container.findViewById(R.id.date);
 
+                // first clear the thumbnail, title, and subtitle until we can load the real info from network
+                thumbnailView.setImageDrawable(null);
+                titleTextView.setText(null);
+                subtitleTextView.setText(null);
+
                 final String videoId = getVideoId(cursor);
                 String videoTimestamp = getVideoTimestamp(cursor);
                 final int videoStartTimeSeconds = getVideoStartTimeSeconds(cursor);
@@ -68,33 +78,35 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 durationTextView.setText(StringUtils.getTimeStringFromIntDuration(videoDurationSeconds));
                 dateTextView.setText(StringUtils.isoStringToFriendlyString(videoTimestamp));
 
-                Call<YouTubeVideoMetadataResponse> request = mYouTubeApi.getVideoMetadataPayload(videoId, Config.YOUTUBE_API_KEY);
-                request.enqueue(new Callback<YouTubeVideoMetadataResponse>() {
-                    @Override
-                    public void onResponse(Call<YouTubeVideoMetadataResponse> call, Response<YouTubeVideoMetadataResponse> response) {
-                        YouTubeVideoMetadataResponse responseObject = response.body();
-                        if (responseObject == null) {
-                            return;
-                        }
-                        if (responseObject.items == null || responseObject.items.size() == 0) {
-                            return;
-                        }
-                        YouTubeVideoMetadataResponse.Video video = responseObject.items.get(0);
-                        if (!TextUtils.equals(videoId, video.id)) {
-                            return;
-                        }
-                        titleTextView.setText(video.snippet.title);
-                        subtitleTextView.setText(video.snippet.description);
-                        Picasso.with(mContext)
-                                .load(video.snippet.getDefaultThumbnailUrl())
-                                .into(thumbnailView);
-                    }
+                if (mVideoByIdCache.containsKey(videoId)) { // if it's cached
+                    fillViewsWithVideoData(titleTextView, subtitleTextView, thumbnailView, mVideoByIdCache.get(videoId));
+                } else { // fetch it from network
+                    Call<YouTubeVideoMetadataResponse> request = mYouTubeApi.getVideoMetadataPayload(videoId, Config.YOUTUBE_API_KEY);
+                    request.enqueue(new Callback<YouTubeVideoMetadataResponse>() {
+                        @Override
+                        public void onResponse(Call<YouTubeVideoMetadataResponse> call, Response<YouTubeVideoMetadataResponse> response) {
+                            YouTubeVideoMetadataResponse responseObject = response.body();
+                            if (responseObject == null) {
+                                return;
+                            }
+                            if (responseObject.items == null || responseObject.items.size() == 0) {
+                                return;
+                            }
+                            YouTubeVideoMetadataResponse.Video video = responseObject.items.get(0);
+                            if (!TextUtils.equals(videoId, video.id)) {
+                                return;
+                            }
 
-                    @Override
-                    public void onFailure(Call<YouTubeVideoMetadataResponse> call, Throwable t) {
-                        Log.e(Config.LOG_WARNING_TAG, "error fetching video metadata");
-                    }
-                });
+                            mVideoByIdCache.put(videoId, video);
+                            fillViewsWithVideoData(titleTextView, subtitleTextView, thumbnailView, video);
+                        }
+
+                        @Override
+                        public void onFailure(Call<YouTubeVideoMetadataResponse> call, Throwable t) {
+                            Log.e(Config.LOG_WARNING_TAG, "error fetching video metadata");
+                        }
+                    });
+                }
 
                 container.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -153,6 +165,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return 0;
         }
         return cursor.getInt(videoDurationIndex);
+    }
+
+    private void fillViewsWithVideoData(TextView titleTextView, TextView subtitleTextView, ImageView thumbnailImageView, YouTubeVideoMetadataResponse.Video video) {
+        titleTextView.setText(video.snippet.title);
+        subtitleTextView.setText(video.snippet.description);
+        Picasso.with(mActivity)
+                .load(video.snippet.getDefaultThumbnailUrl())
+                .into(thumbnailImageView);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
