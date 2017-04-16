@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.TextView;
 
 import com.doyouevenplank.android.R;
 import com.doyouevenplank.android.activity.base.YouTubeFailureRecoveryActivity;
 import com.doyouevenplank.android.app.Config;
+import com.doyouevenplank.android.component.VideoActivitySoundPoolPlayer;
 import com.doyouevenplank.android.db.HistoryDbAccessor;
 import com.doyouevenplank.android.model.Video;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -22,9 +25,16 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     private static final String EXTRA_VIDEO_DURATION_SECONDS = "extra_video_duration_seconds";
 
     private YouTubePlayerFragment mYouTubePlayerFragment;
-    private YouTubePlayer mPlayer;
+    private TextView mCountdownTextView;
+
+    private YouTubePlayer mVideoPlayer;
+    private VideoActivitySoundPoolPlayer mSoundPlayer;
 
     private Handler mHandler;
+    private int mCountdownInt;
+    private Runnable mCountdownRunnable;
+    private Runnable mBeginRunnable;
+    private Runnable mPlayVideoRunnable;
     private Runnable mFinishPlankingRunnable;
 
     private String mVideoId;
@@ -48,6 +58,8 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
+        mSoundPlayer = new VideoActivitySoundPoolPlayer(this);
+
         mVideoId = getIntent().getStringExtra(EXTRA_VIDEO_ID);
         mVideoStartTimeSeconds = getIntent().getIntExtra(EXTRA_VIDEO_START_TIME_SECONDS, -1);
         mVideoDurationSeconds = getIntent().getIntExtra(EXTRA_VIDEO_DURATION_SECONDS, -1);
@@ -57,30 +69,58 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
             return;
         }
 
-        mHandler = new Handler();
+        mCountdownTextView = (TextView) findViewById(R.id.countdown_textview);
 
         mYouTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
         mYouTubePlayerFragment.initialize(Config.YOUTUBE_API_KEY, this);
+
+        mHandler = new Handler();
+        mCountdownInt = 3;
+        mCountdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mSoundPlayer.playSoundFromResource(R.raw.ready);
+                mCountdownTextView.setText("" + mCountdownInt);
+                mCountdownInt -= 1;
+            }
+        };
+        mBeginRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mSoundPlayer.playSoundFromResource(R.raw.go);
+                mCountdownTextView.setText(R.string.video_countdown_begin_message);
+            }
+        };
+        mPlayVideoRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mCountdownTextView.setVisibility(View.GONE);
+                mVideoPlayer.loadVideo(mVideoId, mVideoStartTimeSeconds * 1000);
+                mHandler.postDelayed(mFinishPlankingRunnable, mVideoDurationSeconds * 1000);
+            }
+        };
+        mFinishPlankingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mVideoPlayer.pause();
+                VideoActivity.this.finish();
+
+                // insert the video into the history db
+                HistoryDbAccessor.getInstance(VideoActivity.this).insertHistoryItem(mVideoId, new Date(), mVideoDurationSeconds);
+            }
+        };
     }
 
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
-        mPlayer = player;
+        mVideoPlayer = player;
         if (!wasRestored) {
-            player.loadVideo(mVideoId, mVideoStartTimeSeconds * 1000);
-
-            mFinishPlankingRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    mPlayer.pause();
-                    VideoActivity.this.finish();
-
-                    // insert the video into the history db
-                    HistoryDbAccessor.getInstance(VideoActivity.this).insertHistoryItem(mVideoId, new Date(), mVideoDurationSeconds);
-                }
-            };
-
-            mHandler.postDelayed(mFinishPlankingRunnable, mVideoDurationSeconds * 1000);
+            mCountdownTextView.setVisibility(View.VISIBLE);
+            mHandler.post(mCountdownRunnable); // 3
+            mHandler.postDelayed(mCountdownRunnable, 1000); // 2
+            mHandler.postDelayed(mCountdownRunnable, 2000); // 1
+            mHandler.postDelayed(mBeginRunnable, 3000); // plank!
+            mHandler.postDelayed(mPlayVideoRunnable, 3500); // actually begin playing the video
         }
     }
 
@@ -92,8 +132,12 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
             mHandler.removeCallbacks(mFinishPlankingRunnable);
         }
 
-        if (mPlayer != null) {
-            mPlayer.release();
+        if (mVideoPlayer != null) {
+            mVideoPlayer.release();
+        }
+
+        if (mSoundPlayer != null) {
+            mSoundPlayer.release();
         }
     }
 

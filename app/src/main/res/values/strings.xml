@@ -19,12 +19,13 @@
     <string name="error_fetching_video_metadata">Error fetching video information. Please try again later.</string>
     <string name="error_youtube_player">YouTube player error: %1$s</string>
 
-    <string name="pick_duration_header_message">How long can you plank?</string>
-    <string name="countdown_info_popup_message">The timer will count you down from 3. When the video ends your plank is complete.</string>
-    <string name="countdown_info_popup_confirmation">ok</string>
-
     <string name="error_no_videos_found_toast">Sorry, no videos found</string>
     <string name="video_preview_title_placeholder">Loading&#8230;</string>
     <string name="action_plank">Plank!</string>
     <string name="action_skip">Skip</string>
+    <string name="pick_duration_header_message">How long can you plank?</string>
+    <string name="countdown_info_popup_message">The timer will count you down from 3. When the video ends your plank is complete.</string>
+    <string name="countdown_info_popup_confirmation">OK</string>
+
+    <string name="video_countdown_begin_message">Plank!</string>
 </resources>
